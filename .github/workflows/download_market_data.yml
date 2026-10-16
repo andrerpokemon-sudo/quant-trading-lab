@@ -17,7 +17,7 @@ jobs:
         run: pip install dukascopy-python pandas
       - name: Download 2026 prices
         run: |
-          python dukascopy_downloader.py --symbols NAS100 US500 GER40 --timeframe m5 --start 2026-01-01 --end 2026-10-01
+          python dukascopy_downloader.py --symbols NAS100 US500 GER40 --timeframe m5 --start 2020-01-01 --end 2026-10-01
       - name: Upload CSV results
         if: always()
         uses: actions/upload-artifact@v4
