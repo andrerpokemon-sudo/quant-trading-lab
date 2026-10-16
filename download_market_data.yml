@@ -21,11 +21,11 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Download NAS100, US500 and GER40
         run: |
-          python dukascopy_downloader.py --symbols NAS100 US500 GER40 --timeframe m5 --start 2024-01-01 --end 2025-01-01
+          python dukascopy_downloader.py --symbols NAS100 US500 GER40 --timeframe m5 --start 2025-01-01 --end 2026-01-01
       - name: Upload CSV files as downloadable artifact
         uses: actions/upload-artifact@v4
         with:
-          name: market-data-2024
+          name: market-data-2025
           path: data/**/*.csv
           if-no-files-found: error
           retention-days: 7
