@@ -1,0 +1,35 @@
+name: Download TQQQ and QQQ data
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/download-prices.yml'
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install yfinance pandas
+      - name: Download daily adjusted prices
+        run: |
+          python - <<'PY'
+          import yfinance as yf
+          from pathlib import Path
+          out = Path('market-data')
+          out.mkdir(exist_ok=True)
+          for ticker in ('TQQQ', 'QQQ', 'USDEUR=X'):
+              data = yf.Ticker(ticker).history(start='2008-10-01', interval='1d', auto_adjust=True, actions=True)
+              if data.empty or 'Close' not in data:
+                  raise RuntimeError(f'No prices returned for {ticker}')
+              data.to_csv(out / f'{ticker.replace("=", "_")}_daily.csv')
+              print(ticker, len(data), data.index.min(), data.index.max())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tqqq-qqq-historical-csv
+          path: market-data/*.csv
+          retention-days: 30
